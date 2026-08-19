@@ -11,19 +11,14 @@
 -- ============================================================
 
 -- 工單 1：客服查會員
-
+CREATE INDEX IF NOT EXISTS idx_user_email ON users (email);
 
 -- 工單 2：企業會員的課表
-
-
+CREATE INDEX IF NOT EXISTS idx_user_id ON course_bookings (user_id);
 -- 工單 3：最新購買紀錄牆
-
 
 -- 工單 4：首頁「進行中課程」
 
-
 -- 工單 5：上週開課課程的教練報名統計（思考方向：需新增兩個索引）
 
-
 -- 加分題（選做）：使用部分索引（partial index）讓工單 2 的索引更小、更有效率
-
