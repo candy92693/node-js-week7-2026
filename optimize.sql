@@ -50,9 +50,14 @@ INDEX IF NOT EXISTS idx_class_date ON courses (start_at, end_at);
 --b.courses.start_at → 已經吃到 idx_class_date
 --c.Parallel Seq Scan on course_bookings b Filter: cancelled_at IS NULL....這段掃很多筆資料
 ---WHY?
-CREATE
-INDEX IF NOT EXISTS idx_cancelled_at ON course_bookings (cancelled_at);
+---回到 SQL：
+---JOIN course_bookings b ON b.course_id = c.id
+---AND b.cancelled_at IS NULL
+----這代表 PostgreSQL 真正需要的不只是：所有 cancelled_at IS NULL 的 booking
+----而是： 「指定那些上週 courses 的 booking，而且 booking 還沒取消。」
+----所以對 course_bookings 來說，這兩個欄位其實是一起工作的：course_id + cancelled_at
 
-CREATE INDEX IF NOT EXISTS idx_user_name ON users (name);
+CREATE
+INDEX IF NOT EXISTS idx_cancelled_at ON course_bookings (course_id, cancelled_at);
 
 -- 加分題（選做）：使用部分索引（partial index）讓工單 2 的索引更小、更有效率
